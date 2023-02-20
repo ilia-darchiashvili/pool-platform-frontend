@@ -1,0 +1,24 @@
+.match-form {
+  position: relative;
+  list-style: none;
+  margin: 0 auto;
+  padding: 1rem;
+  width: 90%;
+  max-width: 40rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
+  border-radius: 6px;
+  background: white;
+}
+
+
+#isRankingEvent,
+#player1Walkover,
+#player2Walkover {
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+}
+
+#date {
+  width: auto;
+}

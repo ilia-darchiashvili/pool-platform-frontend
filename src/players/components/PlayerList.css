@@ -1,0 +1,44 @@
+.player-list {
+  list-style: none;
+  margin: 1rem auto;
+  padding: 0;
+  width: 90%;
+  max-width: 40rem;
+  opacity: 0.9;
+}
+
+.player-list-header{
+  display: flex;
+  color: white;
+  border-bottom: 1px dashed #71797E;
+  padding: 10px 0;
+}
+
+.player-position {
+  flex: 1
+}
+
+.player-fullname {
+  flex: 16;
+}
+
+.player-points {
+  flex: 7;
+  text-align: right;
+}
+
+.player-points span {
+  cursor: pointer;
+}
+
+.player-item {
+  display: flex;
+  color: #71797E;
+  border-bottom: 1px dashed #71797E;
+  padding: 5px 0;
+  cursor: pointer;
+}
+
+.player-item:hover {
+  color: white;
+}

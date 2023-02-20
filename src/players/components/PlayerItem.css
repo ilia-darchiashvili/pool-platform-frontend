@@ -1,0 +1,45 @@
+.stats-card {
+  margin: 1rem auto;
+  padding: 15px;
+  width: 90%;
+  max-width: 30rem;
+  background-color: #004494;
+  opacity: 0.8;
+}
+
+.stats-header {
+  display: flex;
+  padding-bottom: 10px;
+  border-bottom: 1px solid white;
+}
+
+.stats-content {
+  padding: 10px 0;
+}
+
+.player-image {
+  height: 100px;
+  border-radius: 6px;
+}
+
+.player-name {
+  width: 100%;
+  padding: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2rem;
+  color: white;
+  word-break: break-word;
+}
+
+.stat-wrapper {
+  display: flex;
+  width: 100%;
+}
+
+.stat-divider {
+  flex: 1;
+  border-bottom: 1px dashed #71797E;
+  margin-bottom: 2px;
+}
