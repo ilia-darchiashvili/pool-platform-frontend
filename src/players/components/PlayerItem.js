@@ -46,7 +46,7 @@ const PlayerItem = ({ player, matches }) => {
           <div className="stat-wrapper">
             <div>Matches Won</div>
             <div className="stat-divider"></div>
-            <div>{(matchesWon) + (matchesWonPercentage >= 0 ? (' (' + matchesWonPercentage + '%)') : '')}</div>
+            <div>{(matchesWon) + (matchesWonPercentage !== null && (' (' + matchesWonPercentage + '%)'))}</div>
           </div>
           <div className="stat-wrapper">
             <div>Total Racks</div>
@@ -56,7 +56,7 @@ const PlayerItem = ({ player, matches }) => {
           <div className="stat-wrapper">
             <div>Racks Won</div>
             <div className="stat-divider"></div>
-            <div>{(racksWon) + (racksWonPercentage >= 0 ? (' (' + racksWonPercentage + '%)') : '')}</div>
+            <div>{(racksWon) + (racksWonPercentage !== null && (' (' + racksWonPercentage + '%)'))}</div>
           </div>
           <div className="stat-wrapper">
             <div>Highest Place</div>

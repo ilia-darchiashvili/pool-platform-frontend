@@ -96,9 +96,9 @@ const CompareItem = ({ loadedPlayers }) => {
                             <div className="stat-divider-player-2">{player2.totalMatches}</div>
                         </div>
                         <div className="compare-stat-wrapper">
-                            <div className="stat-divider-player-1">{(player1.matchesWon) + (Math.round(player1.matchesWon / player1.totalMatches * 100) >= 0 ? (' (' + Math.round(player1.matchesWon / player1.totalMatches * 100) + '%)') : '')}</div>
+                            <div className="stat-divider-player-1">{(player1.matchesWon) + (Math.round(player1.matchesWon / player1.totalMatches * 100) >=0 && (' (' + Math.round(player1.matchesWon / player1.totalMatches * 100) + '%)'))}</div>
                             <div>Matches Won</div>
-                            <div className="stat-divider-player-2">{(player2.matchesWon) + (Math.round(player2.matchesWon / player2.totalMatches * 100) >= 0 ? (' (' + Math.round(player2.matchesWon / player2.totalMatches * 100) + '%)') : '')}</div>
+                            <div className="stat-divider-player-2">{(player2.matchesWon) + (Math.round(player2.matchesWon / player2.totalMatches * 100) >=0 && (' (' + Math.round(player2.matchesWon / player2.totalMatches * 100) + '%)'))}</div>
                         </div>
                         <div className="compare-stat-wrapper">
                             <div className="stat-divider-player-1">{player1.totalRacks}</div>
@@ -106,9 +106,9 @@ const CompareItem = ({ loadedPlayers }) => {
                             <div className="stat-divider-player-2">{player2.totalRacks}</div>
                         </div>
                         <div className="compare-stat-wrapper">
-                            <div className="stat-divider-player-1">{(player1.racksWon) + (Math.round(player1.racksWon / player1.totalRacks * 100) >= 0 ? (' (' + Math.round(player1.racksWon / player1.totalRacks * 100) + '%)') : '')}</div>
+                            <div className="stat-divider-player-1">{(player1.racksWon) + (Math.round(player1.racksWon / player1.totalRacks * 100) >=0 && (' (' + Math.round(player1.racksWon / player1.totalRacks * 100) + '%)'))}</div>
                             <div>Racks Won</div>
-                            <div className="stat-divider-player-2">{(player2.racksWon) + (Math.round(player2.racksWon / player2.totalRacks * 100) >= 0 ? (' (' + Math.round(player2.racksWon / player2.totalRacks * 100) + '%)') : '')}</div>
+                            <div className="stat-divider-player-2">{(player2.racksWon) + (Math.round(player2.racksWon / player2.totalRacks * 100) >=0 && (' (' + Math.round(player2.racksWon / player2.totalRacks * 100) + '%)'))}</div>
                         </div>
                         <div className="compare-stat-wrapper">
                             <div className="stat-divider-player-1">{player1.highestPlace ?? '-'}</div>
