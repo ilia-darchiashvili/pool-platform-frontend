@@ -55,3 +55,9 @@
     margin-bottom: 2px;
     text-align: right;
 }
+
+@media (max-width: 360px) {
+    .player-select {
+        font-size: 0.7rem;
+    }
+}
