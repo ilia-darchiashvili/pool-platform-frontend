@@ -10,7 +10,7 @@ const NavLinks = () => {
 
   return (
     <>
-      <ul className="nav-links">
+      <ul className={auth?.isLoggedIn && auth?.isManager ? "nav-links" : "nav-links nav-links-view"}>
         <li>
           <NavLink to="/players">
             Players

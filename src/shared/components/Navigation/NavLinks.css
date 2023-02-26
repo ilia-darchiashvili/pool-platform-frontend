@@ -10,6 +10,10 @@
   align-items: center;
 }
 
+.nav-links-view {
+  flex-direction: row;
+}
+
 .nav-links li {
   margin: 1rem;
 }
@@ -49,5 +53,11 @@
   .nav-links a {
     color: #71797E;
     text-decoration: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .nav-links-view a {
+    font-size: 0.75rem;
   }
 }

@@ -6,7 +6,7 @@
   display: flex;
   flex-direction: column;
   justify-content: space-around;
-  margin-right: 2rem;
+  margin-right: 1rem;
   cursor: pointer;
 }
 
@@ -28,6 +28,10 @@
 
 .main-navigation__header-nav {
   display: none;
+}
+
+.main-navigation__header-nav-view {
+  display: block;
 }
 
 .main-navigation__drawer-nav {
