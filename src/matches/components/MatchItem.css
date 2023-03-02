@@ -131,4 +131,8 @@
     .tournament-date {
         font-size: 0.75rem;
     }
+
+    .match-info {
+        min-height: 100px;
+    }
 }
