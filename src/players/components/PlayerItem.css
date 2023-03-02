@@ -43,3 +43,9 @@
   border-bottom: 1px dashed #71797E;
   margin-bottom: 2px;
 }
+
+@media (max-width: 768px) {
+  .player-name {
+    font-size: 1.75rem
+  }
+}
