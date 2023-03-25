@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import Card from '../../shared/components/UIElements/Card';
 import MatchItem from '../../matches/components/MatchItem';
@@ -6,7 +6,16 @@ import maleIcon from '../../shared/assets/maleIcon.jpg';
 import femaleIcon from '../../shared/assets/femaleIcon.jpg';
 import './PlayerItem.css';
 
+const asterisk = <span>&#42;</span>;
+
+const HIGHEST_PLACE = {
+  short: 'Highest Place',
+  full: 'Highest Place (Ranking Events)'
+}
+
 const PlayerItem = ({ player, matches }) => {
+  const [ highestPlaceLabel, setHighestPlaceLabel ] = useState(HIGHEST_PLACE.short);
+
   const {
     totalMatches,
     matchesWon,
@@ -26,6 +35,14 @@ const PlayerItem = ({ player, matches }) => {
 
   if (totalRacks) {
     racksWonPercentage = Math.round(racksWon/totalRacks * 100);
+  }
+
+  const onHighestPlaceClick = () => {
+    if (highestPlaceLabel === HIGHEST_PLACE.short) {
+      return setHighestPlaceLabel(HIGHEST_PLACE.full);
+    }
+
+    return setHighestPlaceLabel(HIGHEST_PLACE.short);
   }
 
   return (
@@ -59,7 +76,7 @@ const PlayerItem = ({ player, matches }) => {
             <div>{(racksWon) + (racksWonPercentage !== null && (' (' + racksWonPercentage + '%)'))}</div>
           </div>
           <div className="stat-wrapper">
-            <div>Highest Place</div>
+            <div onClick={onHighestPlaceClick} className="highest-place-label">{highestPlaceLabel}{highestPlaceLabel === HIGHEST_PLACE.short && asterisk}</div>
             <div className="stat-divider"></div>
             <div>{highestPlace ?? '-'}</div>
           </div>
