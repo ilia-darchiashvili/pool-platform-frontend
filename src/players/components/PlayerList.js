@@ -112,8 +112,8 @@ const PlayerList = props => {
               <div className="player-position">{index + 1 + '.'}</div>
               <div className="player-fullname">{player.lastName + ' ' + player.firstName}</div>
               <div className="player-points">{player.rankingPoints ?? '-'}</div>
-              <Button inverse size="x-small">UPD</Button>
-              <Button danger size="x-small" onClick={event => {event.stopPropagation(); showDeleteWarningHandler(player?.id)}}>DEL</Button>
+              {/* <Button inverse size="x-small">UPD</Button> */}
+              {auth?.isLoggedIn && auth?.isManager && <Button danger size="x-small" onClick={event => {event.stopPropagation(); showDeleteWarningHandler(player?.id)}}>DEL</Button>}
             </div>
           ))}
         </Card>
