@@ -44,6 +44,10 @@
   margin-bottom: 2px;
 }
 
+.highest-place-label {
+  cursor: pointer;
+}
+
 @media (max-width: 768px) {
   .player-name {
     font-size: 1.75rem

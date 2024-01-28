@@ -82,8 +82,8 @@ const MatchItem = ({ match, onDeleteMatch }) => {
         <div className="match-info">
           <img className="match-player-image" src={isPlayer1Female ? femaleIcon : maleIcon} alt="Player 1 Image" onClick={() => goToPlayerStats(player1Id)} />
           <div className={winner === "PLAYER1" ? "match-player-name player-winner" : "match-player-name"} onClick={() => goToPlayerStats(player1Id)}>{player1}</div>
-          <div className={winner === "PLAYER1" ? "player1-score player1-winner" : "player1-score player1-loser"}>{(player1Racks || player1Racks === 0) ? player1Racks : (player1Walkover ? 'WO' : '-')}</div>
-          <div className={winner === "PLAYER2" ? "player2-score player2-winner" : "player2-score player2-loser"}>{(player2Racks || player2Racks === 0) ? player2Racks : (player2Walkover ? 'WO' : '-')}</div>
+          <div className={winner === "PLAYER1" ? "player1-score player1-winner" : "player1-score player1-loser"}>{(player1Racks || (player1Racks === 0 && player2Racks !== 0)) ? player1Racks : (player1Walkover ? 'WO' : '-')}</div>
+          <div className={winner === "PLAYER2" ? "player2-score player2-winner" : "player2-score player2-loser"}>{(player2Racks || (player2Racks === 0 && player1Racks !== 0)) ? player2Racks : (player2Walkover ? 'WO' : '-')}</div>
           <div className={winner === "PLAYER2" ? "match-player-name player-winner" : "match-player-name"} onClick={() => goToPlayerStats(player2Id)}>{player2}</div>
           <img className="match-player-image" src={isPlayer2Female ? femaleIcon : maleIcon} alt="Player 2 Image" onClick={() => goToPlayerStats(player2Id)} />
         </div>
