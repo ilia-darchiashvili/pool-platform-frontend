@@ -18,8 +18,8 @@ const MatchList = props => {
 
   return (
     <>
-      {props.items.map(match => (
-        <MatchItem key={match.id} match={match} />
+      {props.items.map((match, index) => (
+        index < props.pageNumber * props.pageSize && <MatchItem key={match.id} match={match} onDeleteMatch={props?.onDeleteMatch} />
       ))}
     </>
   );

@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
 
 import Card from '../../shared/components/UIElements/Card';
-import MatchItem from '../../matches/components/MatchItem';
+import MatchList from '../../matches/components/MatchList';
 import maleIcon from '../../shared/assets/maleIcon.jpg';
 import femaleIcon from '../../shared/assets/femaleIcon.jpg';
+import ShowMore from '../../shared/components/UIElements/ShowMore';
 import './PlayerItem.css';
+
+
+const PAGE_SIZE = 10;
 
 const asterisk = <span>&#42;</span>;
 
@@ -15,6 +19,7 @@ const HIGHEST_PLACE = {
 
 const PlayerItem = ({ player, matches }) => {
   const [ highestPlaceLabel, setHighestPlaceLabel ] = useState(HIGHEST_PLACE.short);
+  const [pageNumber, setPageNumber] = useState(1);
 
   const {
     totalMatches,
@@ -37,6 +42,10 @@ const PlayerItem = ({ player, matches }) => {
     racksWonPercentage = Math.round(racksWon/totalRacks * 100);
   }
 
+  const handleShowMore = () => {
+    setPageNumber(pageNumber + 1);
+  }
+  
   const onHighestPlaceClick = () => {
     if (highestPlaceLabel === HIGHEST_PLACE.short) {
       return setHighestPlaceLabel(HIGHEST_PLACE.full);
@@ -88,9 +97,12 @@ const PlayerItem = ({ player, matches }) => {
         </div>
       </Card>
       {matches?.length > 0 && <h1 style={{textAlign: 'center', color: 'white', marginTop: '45px'}}>Recent Matches</h1>}
-      {matches?.length > 0 && matches.map(match => (
-        <MatchItem key={match.id} match={match} />
-      ))}
+      {matches?.length > 0 && (
+        <>
+          <MatchList items={matches} pageNumber={pageNumber} pageSize={PAGE_SIZE} />
+          {matches.length > pageNumber * PAGE_SIZE && <ShowMore onClick={handleShowMore}>Show More</ShowMore>}
+        </>
+      )}
     </>
   );
 };

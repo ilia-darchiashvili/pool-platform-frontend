@@ -1,0 +1,11 @@
+.show-more {
+    color: white;
+    margin-bottom: 15px;
+    cursor: pointer;
+    opacity: 0.5;
+}
+
+.show-more:hover {
+    text-decoration: underline;
+    opacity: 1;
+}

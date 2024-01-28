@@ -45,3 +45,21 @@
 .player-item:hover {
   color: white;
 }
+
+.player-button-group {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 0 5px 0 5px;
+  margin: auto;
+}
+
+button {
+  margin: -2px 0 -2px 5px;
+  cursor: pointer;
+}
+
+.player-modal-actions {
+  text-align: center;
+}
