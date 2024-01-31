@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <link rel="icon" href="%PUBLIC_URL%/favicon.png" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
     <meta
@@ -17,5 +18,21 @@
     <div id="modal-hook"></div>
     <div id="drawer-hook"></div>
     <div id="root"></div>
+
+  <!-- Connection to tournamentservice API (draft)
+    Option 1 - using following queries in http request:
+      'https://api.tournamentservice.net/2.0/events.php?api_key=3119d2eb621dc036d9&ln=en&id=48106'
+      'https://api.tournamentservice.net/2.0/events.php?api_key=3119d2eb621dc036d9&ln=en&year=2024'
+
+    Option 2 - using next 2 scripts in <head> and then following code in <body>:
+      <script src="http://tournamentservice.net/scripts/JsHttpRequest.js" type="text/javascript"></script>
+      <script src="http://tournamentservice.net/scripts/tournaments.js" type="text/javascript"></script>
+      <div id="tsData"></div>
+      <script type="text/javascript">
+          request={ target: 'tsData', disc: 'POOL', year: 2024, club: 1880 }
+          LoadTournament();
+      </script>
+  -->
+    
   </body>
 </html>

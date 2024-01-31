@@ -1,0 +1,39 @@
+.next-event-container {
+    display: grid;
+    justify-content: center;
+    color: white;
+}
+
+.toggle-next-event-info {
+    display: flex;
+    justify-content: center;
+    margin: 8px 0;
+}
+
+.time-to-next-event-label {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+
+.remaining-time--yellow {
+    color: yellow;
+}
+
+.remaining-time--orange {
+    color: orange;
+}
+
+.remaining-time--red {
+    color: red;
+}
+
+.next-event-name {
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 4px;
+}
+
+#time {
+    width: 100px;
+}

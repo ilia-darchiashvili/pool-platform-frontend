@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import Moment from 'moment';
+
 import Input from '../../shared/components/FormElements/Input';
 import Button from '../../shared/components/FormElements/Button';
 import ErrorModal from '../../shared/components/UIElements/ErrorModal';
@@ -34,6 +36,7 @@ const NewMatch = () => {
   const auth = useContext(AuthContext);
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
   const [loadedPlayers, setLoadedPlayers] = useState();
+  const [ defaultTournamentInfo, setDefaultTournamentInfo ] = useState();
   const [formState, inputHandler] = useForm(
     {
       tournamentName: {
@@ -125,6 +128,17 @@ const NewMatch = () => {
         setLoadedPlayers(displayPlayers);
       } catch (err) {}
     };
+
+    const fetchTournamentInfo = async () => {
+      try {
+        const responseData = await sendRequest(
+          `${process.env.REACT_APP_BACKEND_URL}/next_event`
+        );
+        setDefaultTournamentInfo(responseData?.nextEvent || {});
+      } catch (err) {}
+    };
+
+    fetchTournamentInfo();
     fetchPlayers();
   }, [sendRequest]);
 
@@ -186,27 +200,32 @@ const NewMatch = () => {
     <React.Fragment>
       <ErrorModal error={error} onClear={clearError} />
       <form className="match-form" onSubmit={matchSubmitHandler}>
-        {(isLoading || !loadedPlayers) && <LoadingSpinner asOverlay="center" />}
-        <Input
-            id="tournamentName"
-            element="input"
-            type="text"
-            label="Tournament Name"
-            validators={[VALIDATOR_REQUIRE()]}
-            errorText="Please enter a valid tournament name."
-            onInput={inputHandler}
-        />
-        <Input
-            id="date"
-            element="input"
-            type="date"
-            label="Date"
-            validators={[VALIDATOR_REQUIRE()]}
-            initialValue={(new Date()).toJSON().slice(0, 10)}
-            initialValid={true}
-            errorText="Please enter a valid date."
-            onInput={inputHandler}
-        />
+        {(isLoading || !loadedPlayers || !defaultTournamentInfo) && <LoadingSpinner asOverlay="center" />}
+        {!!defaultTournamentInfo && (
+          <>
+            <Input
+                id="tournamentName"
+                element="input"
+                type="text"
+                label="Tournament Name"
+                validators={[VALIDATOR_REQUIRE()]}
+                initialValue={defaultTournamentInfo.name}
+                errorText="Please enter a valid tournament name."
+                onInput={inputHandler}
+            />
+            <Input
+                id="date"
+                element="input"
+                type="date"
+                label="Date"
+                validators={[VALIDATOR_REQUIRE()]}
+                initialValue={Moment(defaultTournamentInfo.dateTime).utc(true)?.toJSON().substring(0,10) ?? (new Date()).toJSON().substring(0, 10)}
+                initialValid={true}
+                errorText="Please enter a valid date."
+                onInput={inputHandler}
+            />
+          </>
+        )}
         <Input
             element="input"
             id="isRankingEvent"
