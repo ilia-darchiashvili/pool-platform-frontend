@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-  BrowserRouter as Router,
+  // BrowserRouter as Router,
   Route,
   Navigate,
-  Routes
+  Routes,
+  useLocation
 } from 'react-router-dom';
+
+import ReactGA from 'react-ga';
 
 import NewPlayer from './players/pages/NewPlayer';
 import Players from './players/pages/Players';
@@ -18,8 +21,15 @@ import NextEvent from './shared/components/NextEvent/NextEvent';
 import { AuthContext } from './shared/context/auth-context';
 import { useAuth } from './shared/hooks/auth-hook';
 
+const nextEventInfoPathnames = ['/players', '/matches'];
+
+// ReactGA.initialize(process.env.REACT_APP_GOOGLE_ANALYTICS);
+
 const App = () => {
   const { token, login, logout, userId, isManager } = useAuth();
+  const location = useLocation();
+  const [ showNextEvent, setShowNextEvent ] = useState();
+
   const loggedOutRoutes = (
     <Routes>
       <Route path="/" element={<Navigate to="/players" />} />
@@ -50,6 +60,19 @@ const App = () => {
     routes = loggedOutRoutes;
   }
 
+  useEffect(() => {
+    ReactGA.initialize(process.env.REACT_APP_GOOGLE_ANALYTICS);
+  }, []);
+
+  useEffect(() => {
+    if (!!location && nextEventInfoPathnames.includes(location.pathname)) {
+      setShowNextEvent(true);
+    } else {
+      setShowNextEvent(false);
+    }
+    ReactGA.pageview(location.pathname + location.search);
+  }, [location]);
+
   return (
     <AuthContext.Provider
       value={{
@@ -61,17 +84,17 @@ const App = () => {
         logout: logout
       }}
     >
-      <Router>
+      {/* <Router> */}
         <MainNavigation />
         <main>
-          {window.location.pathname !== '/auth' && <NextEvent date={new Date(2024, 2, 3, 11, 0)}/>}
+          {showNextEvent && <NextEvent />}
           {routes}
-          <div className="general-info-container center">
-            <i className="fa fa-exclamation-circle"></i>
-            <span className="general-info-label">Stats have been counted since 2023</span>
-          </div>
         </main>
-      </Router>
+        <div className="general-info-container center">
+          <i className="fa fa-exclamation-circle"></i>
+          <span className="general-info-label">Stats have been counted since 2023</span>
+        </div>
+      {/* </Router> */}
     </AuthContext.Provider>
   );
 };
