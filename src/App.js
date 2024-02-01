@@ -23,8 +23,6 @@ import { useAuth } from './shared/hooks/auth-hook';
 
 const nextEventInfoPathnames = ['/players', '/matches'];
 
-// ReactGA.initialize(process.env.REACT_APP_GOOGLE_ANALYTICS);
-
 const App = () => {
   const { token, login, logout, userId, isManager } = useAuth();
   const location = useLocation();

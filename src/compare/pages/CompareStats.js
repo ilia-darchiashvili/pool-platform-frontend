@@ -9,7 +9,7 @@ const CompareStats = () => {
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
   const [loadedPlayers, setLoadedPlayers] = useState();
 
-useEffect(() => {
+  useEffect(() => {
     const fetchPlayers = async () => {
       try {
         const responseData = await sendRequest(

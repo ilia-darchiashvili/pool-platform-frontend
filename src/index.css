@@ -44,7 +44,7 @@ body {
 .general-info-container {
   color: white;
   opacity: 0.25;
-  margin: 1rem 0;
+  margin: 1rem auto;
 }
 
 .general-info-label {

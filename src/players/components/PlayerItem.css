@@ -48,6 +48,22 @@
   cursor: pointer;
 }
 
+.compare-player-wrapper {
+  display: flex;
+  align-items: center;
+  float: right;
+  margin-top: 1rem;
+}
+
+.compare-label {
+  display: inline-block;
+  color: white;
+}
+
+.compare-player {
+  margin-right: 0 !important;
+}
+
 @media (max-width: 768px) {
   .player-name {
     font-size: 1.75rem

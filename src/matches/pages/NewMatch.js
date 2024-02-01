@@ -7,7 +7,7 @@ import Input from '../../shared/components/FormElements/Input';
 import Button from '../../shared/components/FormElements/Button';
 import ErrorModal from '../../shared/components/UIElements/ErrorModal';
 import LoadingSpinner from '../../shared/components/UIElements/LoadingSpinner';
-import { VALIDATOR_REQUIRE } from '../../shared/util/validators';
+import { VALIDATOR_REQUIRE, VALIDATOR_UNIQUE_PLAYER } from '../../shared/util/validators';
 import { useForm } from '../../shared/hooks/form-hook';
 import { useHttpClient } from '../../shared/hooks/http-hook';
 import { AuthContext } from '../../shared/context/auth-context';
@@ -250,7 +250,7 @@ const NewMatch = () => {
             selectData={loadedPlayers}
             placeholder="Select Player"
             label="Player 1"
-            validators={[VALIDATOR_REQUIRE()]}
+            validators={[VALIDATOR_REQUIRE(), VALIDATOR_UNIQUE_PLAYER(formState.inputs.player2.value)]}
             errorText="Please enter a valid player 1."
             onInput={inputHandler}
         />
@@ -260,7 +260,7 @@ const NewMatch = () => {
             selectData={loadedPlayers}
             placeholder="Select Player"
             label="Player 2"
-            validators={[VALIDATOR_REQUIRE()]}
+            validators={[VALIDATOR_REQUIRE(), VALIDATOR_UNIQUE_PLAYER(formState.inputs.player1.value)]}
             errorText="Please enter a valid player 2."
             onInput={inputHandler}
         />

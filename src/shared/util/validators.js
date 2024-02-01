@@ -6,6 +6,7 @@ const VALIDATOR_TYPE_MAX = 'MAX';
 const VALIDATOR_TYPE_EMAIL = 'EMAIL';
 const VALIDATOR_TYPE_FILE = 'FILE';
 const VALIDATOR_TYPE_PAST_DATE = 'PAST_DATE';
+const VALIDATOR_TYPE_UNIQUE_PLAYER = 'UNIQUE_PLAYER';
 
 export const VALIDATOR_REQUIRE = () => ({ type: VALIDATOR_TYPE_REQUIRE });
 export const VALIDATOR_FILE = () => ({ type: VALIDATOR_TYPE_FILE });
@@ -24,6 +25,11 @@ export const VALIDATOR_EMAIL = () => ({ type: VALIDATOR_TYPE_EMAIL });
 export const VALIDATOR_PAST_DATE = date => ({
   type: VALIDATOR_TYPE_PAST_DATE,
   val: date
+});
+
+export const VALIDATOR_UNIQUE_PLAYER = (val) => ({
+  type: VALIDATOR_TYPE_UNIQUE_PLAYER,
+  val
 });
 
 export const validate = (value, validators) => {
@@ -49,6 +55,9 @@ export const validate = (value, validators) => {
     }
     if (validator.type === VALIDATOR_TYPE_PAST_DATE) {
       isValid = isValid && (new Date(value) > new Date());
+    }
+    if (validator.type === VALIDATOR_TYPE_UNIQUE_PLAYER) {
+      isValid = isValid && value.split('/')?.[0] !== validator.val.split('/')?.[0]
     }
   }
   return isValid;
