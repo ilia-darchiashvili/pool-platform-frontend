@@ -73,6 +73,11 @@ const PlayerList = props => {
     }
   }
 
+  const goToPlayer = (event, selectedPlayerId) => {
+    event.stopPropagation();
+    navigate(`/players/${selectedPlayerId}`);
+  }
+
   return (
     <>
       {isLoading && <LoadingSpinner asOverlay />}
@@ -112,8 +117,12 @@ const PlayerList = props => {
               <div className="player-position">{index + 1 + '.'}</div>
               <div className="player-fullname">{player.lastName + ' ' + player.firstName}</div>
               <div className="player-points">{player.rankingPoints ?? '-'}</div>
-              {/* <Button inverse size="x-small">UPD</Button> */}
-              {auth?.isLoggedIn && auth?.isManager && <Button danger size="x-small" onClick={event => {event.stopPropagation(); showDeleteWarningHandler(player?.id)}}>DEL</Button>}
+              {auth?.isLoggedIn && auth?.isManager && (
+                <>
+                  <Button inverse size="x-small" onClick={event => goToPlayer(event, player?.id)}>UPD</Button>
+                  <Button danger size="x-small" onClick={event => {event.stopPropagation(); showDeleteWarningHandler(player?.id)}}>DEL</Button>
+                </>
+              )}
             </div>
           ))}
         </Card>
