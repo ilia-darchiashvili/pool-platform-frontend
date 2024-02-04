@@ -47,6 +47,7 @@ const App = () => {
       <Route path="/players/:playerId" element={<NewPlayer />} />
       <Route path="/matches" element={<Matches />} />
       <Route path="/matches/new" element={<NewMatch />} />
+      <Route path="/matches/:matchId" element={<NewMatch />} />
       <Route path="/compare" element={<CompareStats />} />
       <Route path="/auth" element={<Navigate to="/" />} />
     </Routes>

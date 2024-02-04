@@ -37,7 +37,7 @@ const NextEvent = () => {
 
     const [ nextEventInfo, setNextEventInfo ] = useState();
     const [ fullTimeString, setFullTimeString ] = useState();
-    const [ viewNextEventInfo, setViewNextEventInfo ] = useState(true);
+    const [ viewNextEventInfo, setViewNextEventInfo ] = useState((auth?.isLoggedIn && auth?.isManager) ? false : true);
     const [ timeStringColor, setTimeStringColor ] = useState();
     
     useEffect(() => {
@@ -130,7 +130,7 @@ const NextEvent = () => {
     return (
         <>
             <div className="next-event-container">
-                {fullTimeString && (
+                {(fullTimeString || (auth?.isLoggedIn && auth?.isManager)) && (
                     <div className="show-more toggle-next-event-info" onClick={() => setViewNextEventInfo(!viewNextEventInfo)}>
                         {viewNextEventInfo ? 'Hide Next Event Info' : 'Show Next Event Info'}
                     </div>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import Moment from 'moment';
 
@@ -37,6 +37,25 @@ const NewMatch = () => {
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
   const [loadedPlayers, setLoadedPlayers] = useState();
   const [ defaultTournamentInfo, setDefaultTournamentInfo ] = useState();
+
+  const [loadedMatch, setLoadedMatch] = useState();
+  const matchId = useParams().matchId;
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchMatch = async () => {
+      if (matchId) {
+        try {
+          const responseData = await sendRequest(
+            `${process.env.REACT_APP_BACKEND_URL}/matches/${matchId}`
+          );
+          setLoadedMatch(responseData?.match || {});
+        } catch (err) {}
+      }
+    };
+    fetchMatch();
+  }, [sendRequest, matchId]);
+
   const [formState, inputHandler] = useForm(
     {
       tournamentName: {
@@ -87,7 +106,7 @@ const NewMatch = () => {
         value: null,
         isValid: true
       },
-      player1RankingPoints: {
+      player2RankingPoints: {
         value: null,
         isValid: true
       },
@@ -142,8 +161,6 @@ const NewMatch = () => {
     fetchPlayers();
   }, [sendRequest]);
 
-  const navigate = useNavigate();
-
   const matchSubmitHandler = async event => {
     event.preventDefault();
     try {
@@ -166,7 +183,7 @@ const NewMatch = () => {
       const isPlayer1Female = formState.inputs.player1.value?.split('/')?.[2];
       const isPlayer2Female = formState.inputs.player2.value?.split('/')?.[2];
       const created_at = new Date();
-      await sendRequest(`${process.env.REACT_APP_BACKEND_URL}/matches`, 'POST',
+      await sendRequest(`${process.env.REACT_APP_BACKEND_URL}/matches${matchId ? ('/' + matchId) : ''}`, matchId ? 'PATCH' : 'POST',
       JSON.stringify({
         tournamentName,
         player1Id,
@@ -201,7 +218,7 @@ const NewMatch = () => {
       <ErrorModal error={error} onClear={clearError} />
       <form className="match-form" onSubmit={matchSubmitHandler}>
         {(isLoading || !loadedPlayers || !defaultTournamentInfo) && <LoadingSpinner asOverlay="center" />}
-        {!!defaultTournamentInfo && (
+        {(!matchId || !!loadedMatch) && !!defaultTournamentInfo && (
           <>
             <Input
                 id="tournamentName"
@@ -209,7 +226,7 @@ const NewMatch = () => {
                 type="text"
                 label="Tournament Name"
                 validators={[VALIDATOR_REQUIRE()]}
-                initialValue={defaultTournamentInfo.name}
+                initialValue={!!loadedMatch ? loadedMatch.tournamentName : defaultTournamentInfo?.name}
                 errorText="Please enter a valid tournament name."
                 onInput={inputHandler}
             />
@@ -219,139 +236,154 @@ const NewMatch = () => {
                 type="date"
                 label="Date"
                 validators={[VALIDATOR_REQUIRE()]}
-                initialValue={Moment(defaultTournamentInfo.dateTime).utc(true)?.toJSON().substring(0,10) ?? (new Date()).toJSON().substring(0, 10)}
+                initialValue={!!loadedMatch ? (new Date(loadedMatch.date)).toJSON().substring(0, 10) : Moment(defaultTournamentInfo?.dateTime).utc(true)?.toJSON().substring(0,10) ?? (new Date()).toJSON().substring(0, 10)}
                 initialValid={true}
                 errorText="Please enter a valid date."
                 onInput={inputHandler}
             />
-          </>
-        )}
-        <Input
-            element="input"
-            id="isRankingEvent"
-            type="checkbox"
-            label="Ranking Event"
-            onInput={inputHandler}
-            validators={[]}
-            initialValid={true}
-        />
-        <Input
-            id="stage"
-            element="select"
-            selectData={STAGES}
-            label="Stage"
-            validators={[VALIDATOR_REQUIRE()]}
-            errorText="Please enter a valid stage."
-            onInput={inputHandler}
-        />
-        <Input
-            id="player1"
-            element="select"
-            selectData={loadedPlayers}
-            placeholder="Select Player"
-            label="Player 1"
-            validators={[VALIDATOR_REQUIRE(), VALIDATOR_UNIQUE_PLAYER(formState.inputs.player2.value)]}
-            errorText="Please enter a valid player 1."
-            onInput={inputHandler}
-        />
-        <Input
-            id="player2"
-            element="select"
-            selectData={loadedPlayers}
-            placeholder="Select Player"
-            label="Player 2"
-            validators={[VALIDATOR_REQUIRE(), VALIDATOR_UNIQUE_PLAYER(formState.inputs.player1.value)]}
-            errorText="Please enter a valid player 2."
-            onInput={inputHandler}
-        />
-        {!formState?.inputs?.player2Walkover?.checked &&
             <Input
                 element="input"
-                id="player1Walkover"
+                id="isRankingEvent"
                 type="checkbox"
-                label="Player 1 Walkover"
+                label="Ranking Event"
                 onInput={inputHandler}
                 validators={[]}
+                initialValue={loadedMatch?.isRankingEvent}
                 initialValid={true}
             />
-        }
-        {!formState.inputs.player1Walkover.checked &&
-          <Input
-            element="input"
-            id="player2Walkover"
-            type="checkbox"
-            label="Player 2 Walkover"
-            onInput={inputHandler}
-            validators={[]}
-            initialValid={true}
-          />
-        }
-        {(!formState?.inputs?.player1Walkover?.checked && !formState?.inputs?.player2Walkover?.checked) &&
-          <>
             <Input
-              id="player1Racks"
+                id="stage"
+                element="select"
+                selectData={STAGES}
+                label="Stage"
+                validators={[VALIDATOR_REQUIRE()]}
+                initialValue={loadedMatch?.stage}
+                initialValid={!!loadedMatch ? true : false}
+                errorText="Please enter a valid stage."
+                onInput={inputHandler}
+            />
+            <Input
+                id="player1"
+                element="select"
+                selectData={loadedPlayers}
+                placeholder="Select Player"
+                label="Player 1"
+                validators={[VALIDATOR_REQUIRE(), VALIDATOR_UNIQUE_PLAYER(formState.inputs.player2.value)]}
+                initialValue={loadedMatch?.player1Id + '/' + loadedMatch?.player1 + '/' + loadedMatch?.isPlayer1Female}
+                initialValid={!!loadedMatch ? true : false}
+                errorText="Please enter a valid player 1."
+                onInput={inputHandler}
+            />
+            <Input
+                id="player2"
+                element="select"
+                selectData={loadedPlayers}
+                placeholder="Select Player"
+                label="Player 2"
+                validators={[VALIDATOR_REQUIRE(), VALIDATOR_UNIQUE_PLAYER(formState.inputs.player1.value)]}
+                initialValue={loadedMatch?.player2Id + '/' + loadedMatch?.player2 + '/' + loadedMatch?.isPlayer2Female}
+                initialValid={!!loadedMatch ? true : false}
+                errorText="Please enter a valid player 2."
+                onInput={inputHandler}
+            />
+            {!formState?.inputs?.player2Walkover?.checked &&
+              <Input
+                  element="input"
+                  id="player1Walkover"
+                  type="checkbox"
+                  label="Player 1 Walkover"
+                  onInput={inputHandler}
+                  validators={[]}
+                  initialValue={loadedMatch?.player1Walkover}
+                  initialValid={true}
+              />
+            }
+            {!formState.inputs.player1Walkover.checked &&
+              <Input
+                element="input"
+                id="player2Walkover"
+                type="checkbox"
+                label="Player 2 Walkover"
+                onInput={inputHandler}
+                validators={[]}
+                initialValue={loadedMatch?.player2Walkover}
+                initialValid={true}
+              />
+            }
+            {(!formState?.inputs?.player1Walkover?.checked && !formState?.inputs?.player2Walkover?.checked) &&
+              <>
+                <Input
+                  id="player1Racks"
+                  element="input"
+                  type="number"
+                  label="Player 1 Racks"
+                  validators={[]}
+                  initialValue={loadedMatch?.player1Racks}
+                  initialValid={true}
+                  errorText="Please enter a valid total player 1 racks."
+                  onInput={inputHandler}
+                />
+                <Input
+                  id="player2Racks"
+                  element="input"
+                  type="number"
+                  label="Player 2 Racks"
+                  validators={[]}
+                  initialValue={loadedMatch?.player2Racks}
+                  initialValid={true}
+                  errorText="Please enter a valid total player 2 racks."
+                  onInput={inputHandler}
+                />
+              </>
+            }
+            <Input
+              id="player1Place"
               element="input"
               type="number"
-              label="Player 1 Racks"
+              label="Player 1 Place"
               validators={[]}
+              initialValue={loadedMatch?.player1Place}
               initialValid={true}
-              errorText="Please enter a valid total player 1 racks."
+              errorText="Please enter a valid total player 1 place."
               onInput={inputHandler}
             />
             <Input
-              id="player2Racks"
+              id="player2Place"
               element="input"
               type="number"
-              label="Player 2 Racks"
+              label="Player 2 Place"
               validators={[]}
+              initialValue={loadedMatch?.player2Place}
               initialValid={true}
-              errorText="Please enter a valid total player 2 racks."
+              errorText="Please enter a valid total player 2 place."
+              onInput={inputHandler}
+            />
+            <Input
+              id="player1RankingPoints"
+              element="input"
+              type="number"
+              label="Player 1 Ranking Points"
+              validators={[]}
+              initialValue={loadedMatch?.player1RankingPoints}
+              initialValid={true}
+              errorText="Please enter a valid total player 1 ranking points."
+              onInput={inputHandler}
+            />
+            <Input
+              id="player2RankingPoints"
+              element="input"
+              type="number"
+              label="Player 2 Ranking Points"
+              validators={[]}
+              initialValue={loadedMatch?.player2RankingPoints}
+              initialValid={true}
+              errorText="Please enter a valid total player 2 ranking points."
               onInput={inputHandler}
             />
           </>
-        }
-        <Input
-          id="player1Place"
-          element="input"
-          type="number"
-          label="Player 1 Place"
-          validators={[]}
-          initialValid={true}
-          errorText="Please enter a valid total player 1 place."
-          onInput={inputHandler}
-        />
-        <Input
-          id="player2Place"
-          element="input"
-          type="number"
-          label="Player 2 Place"
-          validators={[]}
-          initialValid={true}
-          errorText="Please enter a valid total player 2 place."
-          onInput={inputHandler}
-        />
-        <Input
-          id="player1RankingPoints"
-          element="input"
-          type="number"
-          label="Player 1 Ranking Points"
-          validators={[]}
-          initialValid={true}
-          errorText="Please enter a valid total player 1 ranking points."
-          onInput={inputHandler}
-        />
-        <Input
-          id="player2RankingPoints"
-          element="input"
-          type="number"
-          label="Player 2 Ranking Points"
-          validators={[]}
-          initialValid={true}
-          errorText="Please enter a valid total player 2 ranking points."
-          onInput={inputHandler}
-        />
+        )}
         <Button type="submit" /*disabled={!formState.isValid}*/>
-          ADD MATCH
+          {!!loadedMatch ? "UPDATE MATCH" : "ADD MATCH"}
         </Button>
       </form>
     </React.Fragment>
