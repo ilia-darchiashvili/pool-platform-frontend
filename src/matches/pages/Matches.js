@@ -6,24 +6,26 @@ import LoadingSpinner from '../../shared/components/UIElements/LoadingSpinner';
 import ShowMore from '../../shared/components/UIElements/ShowMore';
 import { useHttpClient } from '../../shared/hooks/http-hook';
 
-const PAGE_SIZE = 25;
+const PAGE_SIZE = 50;
 
 const Matches = () => {
   const [loadedMatches, setLoadedMatches] = useState();
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
   const [pageNumber, setPageNumber] = useState(1);
+  // const matchListEndRef = useRef(null);
 
   useEffect(() => {
     const fetchMatches = async () => {
       try {
         const responseData = await sendRequest(
-          `${process.env.REACT_APP_BACKEND_URL}/matches`
+          `${process.env.REACT_APP_BACKEND_URL}/matches`///${pageNumber}/${PAGE_SIZE}`
         );
         setLoadedMatches(responseData.matches);
+        // setLoadedMatches([...loadedMatches, ...responseData.matches]);
       } catch (err) {}
     };
     fetchMatches();
-  }, [sendRequest]);
+  }, [sendRequest/*, pageNumber*/]);
 
   const handleShowMore = () => {
     setPageNumber(pageNumber + 1);
@@ -34,6 +36,10 @@ const Matches = () => {
       prevMatches.filter(match => match.id !== deletedMatchId)
     );
   };
+
+  // useEffect(() => {
+  //   matchListEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  // });
 
   return (
     <React.Fragment>
@@ -47,6 +53,7 @@ const Matches = () => {
         <>
           <MatchList items={loadedMatches} pageNumber={pageNumber} pageSize={PAGE_SIZE} onDeleteMatch={matchDeletedHandler} />
           {loadedMatches.length > pageNumber * PAGE_SIZE && <ShowMore onClick={handleShowMore}>Show More</ShowMore>}
+          {/* <div ref={matchListEndRef} /> */}
         </>
       )}
     </React.Fragment>

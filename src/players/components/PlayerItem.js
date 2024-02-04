@@ -1,10 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import Card from '../../shared/components/UIElements/Card';
 import MatchList from '../../matches/components/MatchList';
 import maleIcon from '../../shared/assets/maleIcon.jpg';
 import femaleIcon from '../../shared/assets/femaleIcon.jpg';
 import ShowMore from '../../shared/components/UIElements/ShowMore';
+import LoadingSpinner from '../../shared/components/UIElements/LoadingSpinner';
+import ErrorModal from '../../shared/components/UIElements/ErrorModal';
+import { useHttpClient } from '../../shared/hooks/http-hook';
 import './PlayerItem.css';
 
 
@@ -18,8 +22,11 @@ const HIGHEST_PLACE = {
 }
 
 const PlayerItem = ({ player, matches }) => {
+  const { isLoading, error, sendRequest, clearError } = useHttpClient();
   const [ highestPlaceLabel, setHighestPlaceLabel ] = useState(HIGHEST_PLACE.short);
   const [pageNumber, setPageNumber] = useState(1);
+  const [ loadedPlayers, setLoadedPlayers ] = useState();
+  const navigate = useNavigate();
 
   const {
     totalMatches,
@@ -54,8 +61,42 @@ const PlayerItem = ({ player, matches }) => {
     return setHighestPlaceLabel(HIGHEST_PLACE.short);
   }
 
+  useEffect(() => {
+    const fetchPlayers = async () => {
+      try {
+        const responseData = await sendRequest(
+          `${process.env.REACT_APP_BACKEND_URL}/players`
+        );
+        const displayOtherPlayers = responseData.players?.filter(selfPlayer => selfPlayer.id !== player?.id)?.map(displayPlayer => {
+            const displayName = displayPlayer.lastName + ' ' + displayPlayer.firstName
+            return {...displayPlayer, displayName};
+        })
+        setLoadedPlayers(displayOtherPlayers);
+      } catch (err) {}
+    };
+    fetchPlayers();
+  }, [sendRequest]);
+
+  const goToCompare = event => {
+    navigate('/compare', {
+      state: {
+        player1Id: player?.id,
+        player2Id: JSON.parse(event?.target?.value)?.id
+      }
+    });
+  }
+
+  if (isLoading) {
+    return (
+      <div className="center">
+        <LoadingSpinner />
+      </div>
+    );
+  }
+
   return (
     <>
+      <ErrorModal error={error} onClear={clearError} />
       <Card className="stats-card">
         <div className="stats-header">
           <img className="player-image" src={isFemale ? femaleIcon : maleIcon} alt="Player Image" />
@@ -93,6 +134,18 @@ const PlayerItem = ({ player, matches }) => {
             <div>Total Ranking Points</div>
             <div className="stat-divider"></div>
             <div>{rankingPoints ?? '-'}</div>
+          </div>
+          <div className="compare-player-wrapper">
+            <div className="compare-label">Compare VS</div>
+            <select
+                onChange={goToCompare}
+                className="player-select compare-player center"
+            >
+              <option key={"null-value"} value={null} className="hide-select-placeholder">Select Player</option>
+              {loadedPlayers?.map(player => (
+                  <option key={player.id} value={JSON.stringify(player)}>{player.displayName}</option>
+              ))}
+            </select>
           </div>
         </div>
       </Card>

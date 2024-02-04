@@ -107,6 +107,10 @@
     border-right-color: #71797E;
 }
 
+.match-item-buttons-container {
+    margin-bottom: 0.25rem;
+}
+
 @media (max-width: 768px) {
     .match-player-image {
         display: none;

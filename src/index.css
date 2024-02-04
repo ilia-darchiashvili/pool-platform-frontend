@@ -40,3 +40,13 @@ body {
   justify-content: center;
   align-items: center;
 }
+
+.general-info-container {
+  color: white;
+  opacity: 0.25;
+  margin: 1rem auto;
+}
+
+.general-info-label {
+  margin-left: 0.5rem;
+}

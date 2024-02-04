@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-  BrowserRouter as Router,
+  // BrowserRouter as Router,
   Route,
   Navigate,
-  Routes
+  Routes,
+  useLocation
 } from 'react-router-dom';
+
+import ReactGA from 'react-ga';
 
 import NewPlayer from './players/pages/NewPlayer';
 import Players from './players/pages/Players';
@@ -14,11 +17,16 @@ import NewMatch from './matches/pages/NewMatch';
 import CompareStats from './compare/pages/CompareStats';
 import Auth from './users/pages/Auth';
 import MainNavigation from './shared/components/Navigation/MainNavigation';
+import NextEvent from './shared/components/NextEvent/NextEvent';
 import { AuthContext } from './shared/context/auth-context';
 import { useAuth } from './shared/hooks/auth-hook';
 
+const nextEventInfoPathnames = ['/players', '/matches'];
+
 const App = () => {
   const { token, login, logout, userId, isManager } = useAuth();
+  const location = useLocation();
+  const [ showNextEvent, setShowNextEvent ] = useState();
 
   const loggedOutRoutes = (
     <Routes>
@@ -36,8 +44,10 @@ const App = () => {
       <Route path="/players" element={<Players />} />
       <Route path="/players/:playerId/stats" element={<PlayerStats />} />
       <Route path="/players/new" element={<NewPlayer />} />
+      <Route path="/players/:playerId" element={<NewPlayer />} />
       <Route path="/matches" element={<Matches />} />
       <Route path="/matches/new" element={<NewMatch />} />
+      <Route path="/matches/:matchId" element={<NewMatch />} />
       <Route path="/compare" element={<CompareStats />} />
       <Route path="/auth" element={<Navigate to="/" />} />
     </Routes>
@@ -50,6 +60,19 @@ const App = () => {
     routes = loggedOutRoutes;
   }
 
+  useEffect(() => {
+    ReactGA.initialize(process.env.REACT_APP_GOOGLE_ANALYTICS);
+  }, []);
+
+  useEffect(() => {
+    if (!!location && nextEventInfoPathnames.includes(location.pathname)) {
+      setShowNextEvent(true);
+    } else {
+      setShowNextEvent(false);
+    }
+    ReactGA.pageview(location.pathname + location.search);
+  }, [location]);
+
   return (
     <AuthContext.Provider
       value={{
@@ -61,10 +84,17 @@ const App = () => {
         logout: logout
       }}
     >
-      <Router>
+      {/* <Router> */}
         <MainNavigation />
-        <main>{routes}</main>
-      </Router>
+        <main>
+          {showNextEvent && <NextEvent />}
+          {routes}
+        </main>
+        <div className="general-info-container center">
+          <i className="fa fa-exclamation-circle"></i>
+          <span className="general-info-label">Stats have been counted since 2023</span>
+        </div>
+      {/* </Router> */}
     </AuthContext.Provider>
   );
 };

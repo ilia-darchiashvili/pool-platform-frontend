@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Moment from 'moment';
 
@@ -6,6 +6,7 @@ import { AuthContext } from '../../shared/context/auth-context';
 import { useHttpClient } from '../../shared/hooks/http-hook';
 
 import Card from '../../shared/components/UIElements/Card';
+import Modal from '../../shared/components/UIElements/Modal';
 import ErrorModal from '../../shared/components/UIElements/ErrorModal';
 import LoadingSpinner from '../../shared/components/UIElements/LoadingSpinner';
 import Button from '../../shared/components/FormElements/Button';
@@ -16,6 +17,8 @@ import './MatchItem.css';
 const MatchItem = ({ match, onDeleteMatch }) => {
   const auth = useContext(AuthContext);
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [selectedMatchId, setSelectedMatchId] = useState(null);
 
   const {
     tournamentName,
@@ -47,17 +50,34 @@ const MatchItem = ({ match, onDeleteMatch }) => {
     navigate('/players/' + playerId + '/stats');
   }
 
-  const handleMatchDelete = async () => {
-    if (match?.id) {
+  const goToMatch = (event, selectedMatchId) => {
+    event.stopPropagation();
+    navigate(`/matches/${selectedMatchId}`);
+  }
+
+  const showDeleteWarningHandler = matchId => {
+    setShowConfirmModal(true);
+    setSelectedMatchId(matchId);
+  };
+
+  const cancelDeleteHandler = () => {
+    setShowConfirmModal(false);
+    setSelectedMatchId(null);
+  };
+
+  const removeMatch = async () => {
+    setShowConfirmModal(false);
+    if (selectedMatchId) {
       await sendRequest(
-        `${process.env.REACT_APP_BACKEND_URL}/matches/${match.id}`,
+        `${process.env.REACT_APP_BACKEND_URL}/matches/${selectedMatchId}`,
         'DELETE',
         null,
         {
           Authorization: 'Bearer ' + auth.token
         }
       );
-      onDeleteMatch(match.id);
+      onDeleteMatch(selectedMatchId);
+      setSelectedMatchId(null);
     }
   }
 
@@ -65,6 +85,27 @@ const MatchItem = ({ match, onDeleteMatch }) => {
     <>
       {isLoading && <LoadingSpinner asOverlay />}
       <ErrorModal error={error} onClear={clearError} />
+      <Modal
+        show={showConfirmModal}
+        onCancel={cancelDeleteHandler}
+        header="Are you sure?"
+        footerClass="player-modal-actions"
+        footer={
+          <React.Fragment>
+            <Button inverse onClick={cancelDeleteHandler}>
+              CANCEL
+            </Button>
+            <Button danger onClick={removeMatch}>
+              DELETE
+            </Button>
+          </React.Fragment>
+        }
+      >
+        <p>
+          Are you sure you want to delete this match? Please note that it
+          can't be undone thereafter!
+        </p>
+      </Modal>
       <Card className="match-card">
         <div className="tournament-name">
           {tournamentName}
@@ -91,8 +132,9 @@ const MatchItem = ({ match, onDeleteMatch }) => {
           {Moment(date).format('DD MMM YYYY')}
         </div>
         {auth?.isLoggedIn && auth?.isManager && onDeleteMatch && (
-          <div className="center">
-            <Button danger size="x-small" onClick={handleMatchDelete}>DEL</Button>
+          <div className="center match-item-buttons-container">
+            <Button inverse size="x-small" onClick={event => goToMatch(event, match?.id)}>UPD</Button>
+            <Button danger size="x-small" onClick={event => {event.stopPropagation(); showDeleteWarningHandler(match?.id)}}>DEL</Button>
           </div>
         )}
       </Card>
