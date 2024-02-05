@@ -7,7 +7,7 @@ import {
   useLocation
 } from 'react-router-dom';
 
-import ReactGA from 'react-ga';
+// import ReactGA from 'react-ga';
 
 import NewPlayer from './players/pages/NewPlayer';
 import Players from './players/pages/Players';
@@ -60,9 +60,9 @@ const App = () => {
     routes = loggedOutRoutes;
   }
 
-  useEffect(() => {
-    ReactGA.initialize(process.env.REACT_APP_GOOGLE_ANALYTICS);
-  }, []);
+  // useEffect(() => {
+  //   ReactGA.initialize(process.env.REACT_APP_GOOGLE_ANALYTICS);
+  // }, []);
 
   useEffect(() => {
     if (!!location && nextEventInfoPathnames.includes(location.pathname)) {
@@ -70,7 +70,7 @@ const App = () => {
     } else {
       setShowNextEvent(false);
     }
-    ReactGA.pageview(location.pathname + location.search);
+    // ReactGA.pageview(location.pathname + location.search);
   }, [location]);
 
   return (
